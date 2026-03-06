@@ -22,9 +22,14 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format check
+        run: pnpm format:check
+
       - name: Prisma generate
         run: pnpm -r run prisma:generate
-        continue-on-error: true
 
       - name: Build
         run: pnpm build
