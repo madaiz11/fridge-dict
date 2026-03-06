@@ -3,7 +3,7 @@ name: AI Code Review
 on:
   pull_request:
     types: [labeled]
-    branches: [main, dev]
+    branches: [main, dev, feature/*, epic/*, hotfix/*, fix/*]
 
 concurrency:
   group: ai-review-${{ github.event.pull_request.number }}
