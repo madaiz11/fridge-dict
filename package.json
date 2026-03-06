@@ -11,7 +11,7 @@
     "dev": "pnpm -r --parallel run dev",
     "dev:order-core": "pnpm --filter order-core run dev",
     "dev:replenishment-engine": "pnpm --filter replenishment-engine run dev",
-    "dev:restock": "pnpm --filter restock run dev",
+    "dev:restock-core": "pnpm --filter restock-core run dev",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "version": "changeset version",

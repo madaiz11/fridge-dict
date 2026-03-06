@@ -1,4 +1,4 @@
 packages:
   - "apps/order-core"
   - "apps/replenishment-engine"
-  - "apps/restock"
+  - "apps/restock-core"
