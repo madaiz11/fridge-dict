@@ -20,7 +20,7 @@ jobs:
           fi
           TOUCHED=$(git diff --name-only "$BASE" HEAD | grep -E '^apps/|^packages/' | grep -v README.md || true)
           if [ -n "$TOUCHED" ]; then
-            COUNT=$(find .changeset -maxdepth 1 -name "*.md" ! -name "README.md" 2>/dev/null | wc -l)
+            COUNT=$(find .changeset -name "*.md" ! -name "README.md" 2>/dev/null | wc -l)
             if [ "$COUNT" -lt 1 ]; then
               echo "::error::This PR changes apps/ or packages/ but has no changeset. Add a file under .changeset/*.md (see https://github.com/changesets/changesets)"
               exit 1

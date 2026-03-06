@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [main, dev]
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   semgrep:
     name: Semgrep Analysis
@@ -13,6 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Semgrep OSS
+        id: semgrep
         uses: semgrep/semgrep-action@v1
         with:
           config: >-
@@ -25,3 +30,9 @@ jobs:
             p/react
             p/nodejs
           generateSarif: "1"
+
+      - name: Upload SARIF to Code Scanning
+        if: success()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif

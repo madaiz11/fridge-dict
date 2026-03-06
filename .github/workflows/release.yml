@@ -26,7 +26,6 @@ jobs:
 
       - name: Prisma generate
         run: pnpm -r run prisma:generate
-        continue-on-error: true
 
       - name: Build
         run: pnpm build
