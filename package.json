@@ -16,7 +16,7 @@
     "docker:down": "docker compose down",
     "version": "changeset version",
     "release": "changeset publish",
-    "prepare": "husky"
+    "prepare": "husky install"
   },
   "engines": {
     "node": ">=20"
