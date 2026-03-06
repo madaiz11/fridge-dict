@@ -2,8 +2,7 @@ name: AI Code Review
 
 on:
   pull_request:
-    types: [labeled]
-    branches: [main, dev, feature/*, epic/*, hotfix/*, fix/*]
+    types: [opened, synchronize, labeled]
 
 concurrency:
   group: ai-review-${{ github.event.pull_request.number }}
@@ -15,7 +14,7 @@ permissions:
 
 jobs:
   review:
-    if: github.event.label.name == 'ai-review'
+    if: github.event.label.name == 'ai-review' || github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 'dev' || startsWith(github.event.pull_request.base.ref, 'hotfix/')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
