@@ -2,13 +2,18 @@ node_modules
 dist
 .next
 generated
+*.tsbuildinfo
+
 .env
-.env.local
+.env.*
+!.env.example
+
 *.log
 .DS_Store
 .idea
 .vscode
-*.tsbuildinfo
-pnpm-lock.yaml
+*.local
 
+coverage
+.turbo
 .cursor

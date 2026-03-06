@@ -3,15 +3,32 @@
   "private": true,
   "scripts": {
     "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
     "dev": "pnpm -r --parallel run dev",
     "dev:order-core": "pnpm --filter order-core run dev",
     "dev:replenishment-engine": "pnpm --filter replenishment-engine run dev",
     "dev:restock": "pnpm --filter restock run dev",
     "docker:up": "docker compose up -d",
-    "docker:down": "docker compose down"
+    "docker:down": "docker compose down",
+    "version": "changeset version",
+    "release": "changeset publish",
+    "prepare": "husky"
   },
   "engines": {
     "node": ">=20"
   },
-  "packageManager": "pnpm@9.14.2"
+  "packageManager": "pnpm@9.14.2",
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@changesets/cli": "^2.30.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs,json,md,yml,yaml,css}": "biome check --write --no-errors-on-unmatched"
+  }
 }

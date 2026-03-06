@@ -22,17 +22,39 @@ Monorepo with Next.js (restock) and NestJS (order-core, replenishment-engine). E
 
 3. Generate Prisma clients and run migrations (per app):
    ```bash
-   pnpm --filter order-core prisma:generate
+   pnpm -r run prisma:generate
    pnpm --filter order-core prisma:migrate
-   pnpm --filter replenishment-engine prisma:generate
    pnpm --filter replenishment-engine prisma:migrate
-   pnpm --filter restock prisma:generate
    pnpm --filter restock prisma:migrate
    ```
 
 4. Run apps:
    - All: `pnpm dev`
    - Or individually: `pnpm dev:order-core`, `pnpm dev:replenishment-engine`, `pnpm dev:restock`
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm build` | Build all apps |
+| `pnpm test` | Run tests in all workspaces |
+| `pnpm lint` | Biome check (lint + format check) |
+| `pnpm lint:fix` | Biome check with auto-fix and format |
+| `pnpm format` | Format all files with Biome |
+| `pnpm format:check` | Check formatting only |
+| `pnpm docker:up` / `pnpm docker:down` | Start/stop Docker services |
+| `pnpm version` | Bump versions (changesets) |
+| `pnpm release` | Publish (changesets) |
+
+## Pre-commit (Husky + Biome)
+
+On `git commit`, lint-staged runs **Biome** on staged files (`*.ts, tsx, js, jsx, mjs, cjs, json, md, yml, yaml, css`): format + lint with auto-fix. Ensure `pnpm run lint:fix` passes before committing.
+
+## CI / GitHub
+
+- **PR to main/dev:** Build, test, changeset required (when `apps/` or `packages/` change), AI code review (google-github-actions/run-gemini-cli, model gemini-2.5-flash). Add `GEMINI_API_KEY` in repo Secrets for AI review.
+- **Push to main:** Release workflow runs build then changesets version/publish.
+- Add a changeset when changing `apps/` or `packages/`: `pnpm changeset`, then commit the new file under `.changeset/`.
 
 ## Docker services
 
@@ -49,4 +71,4 @@ Monorepo with Next.js (restock) and NestJS (order-core, replenishment-engine). E
 - **replenishment-engine** (NestJS) – port 3001, Postgres + Redis
 - **restock** (Next.js) – port 3002, Postgres + Redis
 
-.env files use `localhost` and the ports above for local development with Dockerized DBs and Redis.
+`.env` files use `localhost` and the ports above for local development with Dockerized DBs and Redis.

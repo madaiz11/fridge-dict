@@ -1,0 +1,29 @@
+name: Require changeset
+
+on:
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  changeset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Require changeset when apps/ or packages/ changed
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          if [ -z "$BASE" ]; then
+            BASE=$(git merge-base HEAD origin/${{ github.event.pull_request.base.ref }})
+          fi
+          TOUCHED=$(git diff --name-only "$BASE" HEAD | grep -E '^apps/|^packages/' | grep -v README.md || true)
+          if [ -n "$TOUCHED" ]; then
+            COUNT=$(find .changeset -maxdepth 1 -name "*.md" ! -name "README.md" 2>/dev/null | wc -l)
+            if [ "$COUNT" -lt 1 ]; then
+              echo "::error::This PR changes apps/ or packages/ but has no changeset. Add a file under .changeset/*.md (see https://github.com/changesets/changesets)"
+              exit 1
+            fi
+          fi
+        shell: bash

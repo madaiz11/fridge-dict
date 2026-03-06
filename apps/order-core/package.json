@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nest build",
+    "test": "echo \"No tests\"",
     "dev": "nest start --watch",
     "start": "nest start",
     "prisma:generate": "prisma generate",
