@@ -1,0 +1,87 @@
+# model stepfun/step-3.5-flash:free อาจ rate limit/คุณภาพไม่คงที่ ถ้าต้องการเสถียรใช้ paid model (เช่น openai/gpt-4o)
+name: AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled]
+
+concurrency:
+  group: ai-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    if: |
+      (github.event.label.name == 'ai-review' ||
+       github.event.pull_request.base.ref == 'main' ||
+       github.event.pull_request.base.ref == 'dev' ||
+       startsWith(github.event.pull_request.base.ref, 'hotfix/')) &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch base and create PR diff
+        env:
+          IGNORE_PATTERNS: node_modules/**/*,dist/**/*,.turbo/**/*,*.md,pnpm-lock.yaml,**/package-lock.json
+          INCLUDE_PATTERNS: '*.ts,*.tsx,*.js,*.jsx,*.mjs,*.cjs,*.json,*.yml,*.yaml'
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.sha }}
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          FILTERED=()
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              node_modules/*|*/node_modules/*|dist/*|*/dist/*|.turbo/*|*/.turbo/*) continue ;;
+              *.md) continue ;;
+              pnpm-lock.yaml|*/pnpm-lock.yaml) continue ;;
+              */package-lock.json) continue ;;
+              .env|.env.*|*.env) continue ;;
+              *secret*|*credential*|*.pem|*.key) continue ;;
+            esac
+            case "$f" in
+              *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs|*.json|*.yml|*.yaml) FILTERED+=("$f") ;;
+            esac
+          done <<< "$CHANGED"
+          
+          if [ ${#FILTERED[@]} -eq 0 ]; then
+            echo "No matching files to review."
+            echo "" > pr.diff
+          else
+            git diff "$BASE_SHA" "$HEAD_SHA" -- "${FILTERED[@]}" | head -n 5000 > pr.diff
+            TOTAL=$(git diff "$BASE_SHA" "$HEAD_SHA" -- "${FILTERED[@]}" | wc -l)
+            if [ "$TOTAL" -gt 5000 ]; then
+              echo "::warning::Diff truncated to 5000 lines (total $TOTAL). Review may be partial."
+            fi
+          fi
+          echo "Diff lines: $(wc -l < pr.diff)"
+
+      - name: Sanitize diff (redact possible secrets before sending to API)
+        run: |
+          while IFS= read -r line; do
+            if echo "$line" | grep -qEi '^[+-].*(api_?key|password|secret|token|credential|authorization|bearer)\s*[:=]\s*.'; then
+              printf '%s  [REDACTED: possible secret]\n' "${line:0:1}"
+            else
+              echo "$line"
+            fi
+          done < pr.diff > pr_sanitized.diff
+          mv pr_sanitized.diff pr.diff
+
+      - name: Call OpenRouter API & submit PR review (block merge until approved)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          chmod +x .github/scripts/ai-code-review.sh
+          .github/scripts/ai-code-review.sh "${{ github.event.pull_request.number }}" pr.diff

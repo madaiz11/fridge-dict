@@ -1,0 +1,38 @@
+name: Security Scan (SAST)
+
+on:
+  pull_request:
+    branches: [main, dev]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  semgrep:
+    name: Semgrep Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep OSS
+        id: semgrep
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: >-
+            p/ci
+            p/security-audit
+            p/secrets
+            p/typescript
+            p/javascript
+            p/golang
+            p/react
+            p/nodejs
+          generateSarif: "1"
+
+      - name: Upload SARIF to Code Scanning
+        if: success()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif

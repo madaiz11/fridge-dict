@@ -1,5 +1,5 @@
 {
-  "name": "replenishment-engine",
+  "name": "restock-core",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -16,7 +16,6 @@
     "@nestjs/core": "^10.4.15",
     "@nestjs/platform-express": "^10.4.15",
     "@prisma/client": "^6.1.0",
-    "ioredis": "^5.4.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
