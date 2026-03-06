@@ -1,0 +1,70 @@
+services:
+  order-core-db:
+    image: postgres:16-alpine
+    container_name: order-core-db
+    environment:
+      POSTGRES_USER: order_core
+      POSTGRES_PASSWORD: order_core_secret
+      POSTGRES_DB: order_core
+    ports:
+      - "5433:5432"
+    volumes:
+      - order_core_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U order_core -d order_core"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  replenishment-engine-db:
+    image: postgres:16-alpine
+    container_name: replenishment-engine-db
+    environment:
+      POSTGRES_USER: replenishment
+      POSTGRES_PASSWORD: replenishment_secret
+      POSTGRES_DB: replenishment_engine
+    ports:
+      - "5434:5432"
+    volumes:
+      - replenishment_engine_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U replenishment -d replenishment_engine"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  restock-db:
+    image: postgres:16-alpine
+    container_name: restock-db
+    environment:
+      POSTGRES_USER: restock
+      POSTGRES_PASSWORD: restock_secret
+      POSTGRES_DB: restock
+    ports:
+      - "5435:5432"
+    volumes:
+      - restock_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U restock -d restock"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis-restock-replenishment:
+    image: redis:7-alpine
+    container_name: redis-restock-replenishment
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_restock_replenishment_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  order_core_pgdata:
+  replenishment_engine_pgdata:
+  restock_pgdata:
+  redis_restock_replenishment_data:

@@ -1,0 +1,17 @@
+{
+  "name": "frigdict-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r run build",
+    "dev": "pnpm -r --parallel run dev",
+    "dev:order-core": "pnpm --filter order-core run dev",
+    "dev:replenishment-engine": "pnpm --filter replenishment-engine run dev",
+    "dev:restock": "pnpm --filter restock run dev",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.14.2"
+}
