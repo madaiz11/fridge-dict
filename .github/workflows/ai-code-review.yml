@@ -1,7 +1,7 @@
 name: AI Code Review
 
 # รันเฉพาะเมื่อติด label "ai-review" ใน PR (ประหยัดโควตา Pro ไม่รันทุก push)
-# ถ้าโควตา gemini-1.5-pro เต็ม: เปลี่ยน gemini_model ด้านล่างเป็น gemini-1.5-flash
+# ถ้าโควตา Pro เต็ม: เปลี่ยน gemini_model ด้านล่างเป็น gemini-2.5-flash
 on:
   pull_request:
     types: [labeled]
@@ -42,10 +42,10 @@ jobs:
           REPOSITORY: ${{ github.repository }}
         with:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
-          gemini_model: gemini-1.5-pro
+          gemini_model: gemini-2.5-pro
           prompt: |
             บทบาท: คุณคือ Senior Software Engineer และ Security Auditor ที่มีความเชี่ยวชาญสูงและทำงานเนี๊ยบที่สุด
-            เป้าหมาย: รีวิว Code Diff ต่อไปนี้อย่างตรงไปตรงมา ห้ามเกรงใจ ห้ามอวย และเน้นจุดที่อาจพังในอนาคต
+            เป้าหมาย: รีวิว Code Diff ต่อไปนี้อย่างตรงไปตรงมา และเน้นจุดที่อาจพังในอนาคต
 
             ข้อกำหนดในการรีวิว:
             1. Logic & Bugs: ตรวจสอบตรรกะที่ผิดพลาด, Edge cases ที่ลืมคิด (เช่น null, empty, error handling)
