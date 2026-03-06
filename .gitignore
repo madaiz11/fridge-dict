@@ -10,3 +10,5 @@ generated
 .vscode
 *.tsbuildinfo
 pnpm-lock.yaml
+
+.cursor
