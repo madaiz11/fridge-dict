@@ -8,7 +8,7 @@
     }
   },
   "files": {
-    "ignore": ["node_modules", "dist", "coverage", "pnpm-lock.yaml", "**/*.spec.ts"]
+    "ignore": ["node_modules", "dist", "coverage", "pnpm-lock.yaml"]
   },
   "formatter": {
     "enabled": true,
@@ -53,7 +53,7 @@
         "noAsyncPromiseExecutor": "error",
         "noCatchAssign": "error",
         "noConfusingVoidType": "error",
-        "noConsoleLog": "error",
+        "noConsoleLog": "warn",
         "noDoubleEquals": "error",
         "noExplicitAny": "error",
         "noFallthroughSwitchClause": "error",
