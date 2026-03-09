@@ -11,6 +11,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { LOGGER_MODULE_OPTIONS } from './core/configs/constants';
 import { createPinoHttpConfig } from './core/configs/pino-config';
 import type { LoggerModuleOptions } from './core/interfaces/logger.interfaces';
+import { CorrelationIdMiddleware } from './integrations/correlation-id.middleware';
 import { LoggerExceptionFilter } from './integrations/exception.filter';
 import { FrigdictLoggerService } from './integrations/logger.service';
 import { LoggingInterceptor } from './integrations/logging.interceptor';
@@ -39,6 +40,7 @@ export class CommonLoggerModule {
           provide: LOGGER_MODULE_OPTIONS,
           useValue: options,
         },
+        CorrelationIdMiddleware,
         FrigdictLoggerService,
         {
           provide: APP_INTERCEPTOR,
@@ -49,7 +51,12 @@ export class CommonLoggerModule {
           useClass: LoggerExceptionFilter,
         },
       ],
-      exports: [FrigdictLoggerService, LoggerModule],
+      exports: [
+        LOGGER_MODULE_OPTIONS,
+        CorrelationIdMiddleware,
+        FrigdictLoggerService,
+        LoggerModule,
+      ],
     };
   }
 
@@ -83,6 +90,7 @@ export class CommonLoggerModule {
           inject: options.inject ?? [],
           useFactory: options.useFactory,
         },
+        CorrelationIdMiddleware,
         FrigdictLoggerService,
         {
           provide: APP_INTERCEPTOR,
@@ -93,7 +101,12 @@ export class CommonLoggerModule {
           useClass: LoggerExceptionFilter,
         },
       ],
-      exports: [FrigdictLoggerService, LoggerModule],
+      exports: [
+        LOGGER_MODULE_OPTIONS,
+        CorrelationIdMiddleware,
+        FrigdictLoggerService,
+        LoggerModule,
+      ],
     };
   }
 }

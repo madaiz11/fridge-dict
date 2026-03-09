@@ -1,6 +1,9 @@
+import { loadEnv } from '@frigdict/bootstrap';
 import { FrigdictLoggerService, Logger } from '@frigdict/logger';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+
+loadEnv();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
