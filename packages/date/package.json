@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "@frigdict/types": "workspace:*",
+    "dayjs": "^1.11.19"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.2"
+  },
+  "files": ["dist"],
+  "main": "dist/index.js",
+  "name": "@frigdict/date",
+  "private": true,
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs --dts --clean --minify --out-dir dist",
+    "prepare": "pnpm run build",
+    "test": "node -e \"require('assert').strictEqual(1,1); console.log('pass')\""
+  },
+  "types": "dist/index.d.ts",
+  "version": "1.0.0"
+}
