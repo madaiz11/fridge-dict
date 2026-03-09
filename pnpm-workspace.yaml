@@ -2,3 +2,7 @@ packages:
   - "apps/order-core"
   - "apps/replenishment-engine"
   - "apps/restock-core"
+  - "packages/bootstrap"
+  - "packages/logger"
+  - "packages/types"
+  - "packages/date"

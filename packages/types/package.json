@@ -1,0 +1,16 @@
+{
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  },
+  "files": ["dist"],
+  "name": "@frigdict/types",
+  "private": true,
+  "scripts": {
+    "build": "pnpm run clean && tsc -p tsconfig.json",
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
+    "prepare": "pnpm run build",
+    "test": "node -e \"require('assert').strictEqual(1,1); console.log('pass')\""
+  },
+  "types": "dist/index.d.ts",
+  "version": "1.0.0"
+}
